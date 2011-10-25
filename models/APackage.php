@@ -289,8 +289,29 @@ class APackage extends CFormModel {
 		foreach($this->attributeNames() as $attribute) {
 			$attributes[$attribute] = $this->{$attribute};
 		}
+		$attributes["dependencies"] = array();
+		foreach($this->getDependencies() as $dependency) {
+			if (is_array($dependency)) {
+				die(print_r($dependency,true));
+			}
+			$attributes['dependencies'][$dependency->name] = $dependency->toJSON();
+		}
 		return $attributes;
 	}
+	/**
+	 * Gets an array of broken dependency names
+	 * @return array an array of broken dependency names
+	 */
+	public function getBrokenDependencies() {
+		$broken = array();
+		foreach($this->getDependencies() as $name => $dependency) {
+			if (is_array($dependency)) {
+				$broken[] = $name;
+			}
+		}
+		return $broken;
+	}
+
 	/**
 	 * Finds the packages that this package depends on
 	 * @return array an array of package names that this package depends on
@@ -304,13 +325,16 @@ class APackage extends CFormModel {
 			"exclude" => array(".svn",".git"),
 		);
 		$manager = $this->getRepository()->getManager();
-		$files = CFileHelper::findFiles(dirname($this->getInstallationDirectory()),$options);
+		$files = CFileHelper::findFiles($this->getInstallationDirectory(),$options);
 		$this->_dependencies = array();
 		foreach($files as $file) {
 			$contents = file_get_contents($file);
 			if (preg_match_all("/packages\.\w+/ui",$contents,$matches)) {
 				foreach($matches[0] as $match) {
 					$match = substr($match,9);
+					if ($match == $this->name) {
+						continue;
+					}
 					if (isset($manager->getPackages()->{$match})) {
 						$this->_dependencies[$match] = $manager->getPackages()->{$match};
 					}
@@ -321,6 +345,15 @@ class APackage extends CFormModel {
 			}
 		}
 		return $this->_dependencies;
+	}
+
+	public function setDependencies($value) {
+		$this->_dependencies = array();
+		foreach($value as $name => $config) {
+			$config['class'] = "APackage";
+			$this->_dependencies[$name] = Yii::createComponent($config);
+		}
+
 	}
 	/**
 	 * Finds the packages that depend on this package
