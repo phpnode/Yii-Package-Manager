@@ -51,6 +51,90 @@ class APackageCommand extends CConsoleCommand {
 
 		echo "Package ".$packageName." was created.\n";
 	}
+	/**
+	 * Sets a package attribute to the given value.
+	 * <pre>
+	 * ./yiic package set ypm author "Charles Pick"
+	 * </pre>
+	 * @param array $args an array of arguments passed to the function
+	 */
+	public function actionSet($args) {
+		$packageName = array_shift($args);
+		$attribute = array_shift($args);
+		$value = implode(" ",$args);
+		if (!$packageName) {
+			$this->usageError("No package name specified!");
+		}
+		if (!$attribute) {
+			$this->usageError("No attribute name specified!");
+		}
+		if ($value == "" && $value !== 0) {
+			$this->usageError("No value specified!");
+		}
+		$manager = $this->getManager();
+		$package = $manager->getPackages()->itemAt($packageName);
+		if ($package === null) {
+			echo "No package found with the name: '".$packageName."'\n";
+			return;
+		}
+		$package->{$attribute} = $value;
+		if ($package->save()) {
+			echo "OK\n";
+		}
+		else {
+			echo "Error setting value:\n";
+			echo $package->listErrors();
+		}
+	}
+	/**
+	 * Gets a package attribute with the given name
+	 * <pre>
+	 * ./yiic package get ypm author
+	 * </pre>
+	 * @param array $args an array of arguments passed to the function
+	 */
+	public function actionGet($args) {
+		$packageName = array_shift($args);
+		$attribute = array_shift($args);
+		if (!$packageName) {
+			$this->usageError("No package name specified!");
+		}
+		if (!$attribute) {
+			$this->usageError("No attribute name specified!");
+		}
+		$manager = $this->getManager();
+		$package = $manager->getPackages()->itemAt($packageName);
+		if ($package === null) {
+			echo "No package found with the name: '".$packageName."'\n";
+			return;
+		}
+		echo $package->{$attribute}."\n";
+	}
+
+	/**
+	 * Gets a package attribute with the given name
+	 * <pre>
+	 * ./yiic package get ypm author
+	 * </pre>
+	 * @param array $args an array of arguments passed to the function
+	 */
+	public function actionPublish($args) {
+		$packageName = array_shift($args);
+		$attribute = array_shift($args);
+		if (!$packageName) {
+			$this->usageError("No package name specified!");
+		}
+		if (!$attribute) {
+			$this->usageError("No attribute name specified!");
+		}
+		$manager = $this->getManager();
+		$package = $manager->getPackages()->itemAt($packageName);
+		if ($package === null) {
+			echo "No package found with the name: '".$packageName."'\n";
+			return;
+		}
+		echo $package->{$attribute}."\n";
+	}
 
 	/**
 	 * Finds a package with the given name

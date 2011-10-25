@@ -33,7 +33,7 @@ class APackageManager extends CApplicationComponent {
 				if (!file_exists($packageFile)) {
 					continue;
 				}
-				$package = new APackage();
+				$package = new APackage("edit");
 				if (function_exists("json_decode")) {
 					$data = json_decode(file_get_contents($packageFile));
 				}
