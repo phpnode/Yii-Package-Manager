@@ -72,7 +72,7 @@ class APackageCommand extends CConsoleCommand {
 			$this->usageError("No value specified!");
 		}
 		$manager = $this->getManager();
-		$package = $manager->getPackages()->itemAt($packageName);
+		$package = $manager->getPackages()->itemAt($packageName); /* @var APackage $package */
 		if ($package === null) {
 			echo "No package found with the name: '".$packageName."'\n";
 			return;
@@ -103,7 +103,7 @@ class APackageCommand extends CConsoleCommand {
 			$this->usageError("No attribute name specified!");
 		}
 		$manager = $this->getManager();
-		$package = $manager->getPackages()->itemAt($packageName);
+		$package = $manager->getPackages()->itemAt($packageName); /* @var APackage $package */
 		if ($package === null) {
 			echo "No package found with the name: '".$packageName."'\n";
 			return;
@@ -120,20 +120,27 @@ class APackageCommand extends CConsoleCommand {
 	 */
 	public function actionPublish($args) {
 		$packageName = array_shift($args);
-		$attribute = array_shift($args);
 		if (!$packageName) {
 			$this->usageError("No package name specified!");
 		}
-		if (!$attribute) {
-			$this->usageError("No attribute name specified!");
-		}
 		$manager = $this->getManager();
-		$package = $manager->getPackages()->itemAt($packageName);
+		$package = $manager->getPackages()->itemAt($packageName); /* @var APackage $package */
 		if ($package === null) {
 			echo "No package found with the name: '".$packageName."'\n";
 			return;
 		}
-		echo $package->{$attribute}."\n";
+		$remotes = $package->getGitRepository()->getRemotes();
+		if (!isset($remotes['origin'])) {
+			echo "No remote git repository is set for this package, make sure you've added a remote called 'origin'\n";
+			return;
+		}
+		if ($package->url == "") {
+			$package->url = $remotes['origin']->pushUrl;
+		}
+		$package->save();
+		$git = $package->getGitRepository(); /** @var AGitRepository $git */
+		$git->commit("Published package with Yii Package Manager",true);
+		echo $git->push("origin","master");
 	}
 
 	/**
@@ -187,7 +194,7 @@ class APackageCommand extends CConsoleCommand {
 			$this->usageError("No package name specified!");
 		}
 		$manager = $this->getManager();
-		$package = $manager->getPackages()->itemAt($packageName);
+		$package = $manager->getPackages()->itemAt($packageName); /* @var APackage $package */
 		if ($package === null) {
 			echo "No package found with the name: '".$packageName."'\n";
 			return;

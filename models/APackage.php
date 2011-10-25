@@ -46,6 +46,13 @@ class APackage extends CFormModel {
 	 * @var APackageRepository
 	 */
 	protected $_repository;
+
+	/**
+	 * The repository this package belongs to
+	 * @var AGitRepository
+	 */
+	protected $_gitRepository;
+
 	/**
 	 * An array of packages this package depends on
 	 * @var APackage[]
@@ -160,8 +167,7 @@ class APackage extends CFormModel {
 			$this->addError(null, "This package is already installed.");
 			return false;
 		}
-		$git = new AGitRepository();
-		$git->setPath($this->getInstallationDirectory(),true);
+		$git = $this->getGitRepository();
 		$git->cloneRemote($this->url);
 		$this->installationHash = $this->getHash();
 		if (!$this->save()) {
@@ -171,6 +177,20 @@ class APackage extends CFormModel {
 		$git->commit("Installed ".$this->name);
 		return true;
 	}
+	/**
+	 * Gets the git repository to use with this package
+	 * @return AGitRepository the git repository to use with this package
+	 */
+	public function getGitRepository()
+	{
+		if ($this->_gitRepository !== null) {
+			return $this->_gitRepository;
+		}
+		$this->_gitRepository = new AGitRepository();
+		$this->_gitRepository->setPath($this->getInstallationDirectory(), true);
+		return $this->_gitRepository;
+	}
+
 	/**
 	 * Uninstalls the package
 	 * @return boolean whether the package uninstalled successfully or not
@@ -214,8 +234,7 @@ class APackage extends CFormModel {
 	 * @return boolean true if the package has been modified
 	 */
 	public function getIsModified() {
-		$git = new AGitRepository();
-		$git->setPath($this->getInstallationDirectory());
+		$git = $this->getGitRepository();
 		if (count($git->getBranches()) > 1) {
 			return true;
 		}
