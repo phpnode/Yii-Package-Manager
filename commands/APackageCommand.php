@@ -143,6 +143,7 @@ class APackageCommand extends CConsoleCommand {
 			echo "The following dependencies could not be resolved: ".implode(", ",$broken)."\n";
 			return;
 		}
+		$package->installationHash = $package->getHash();
 		if (!$package->save()) {
 			echo "There was a problem updating the package:\n";
 			echo $package->listErrors();
@@ -155,6 +156,34 @@ class APackageCommand extends CConsoleCommand {
 
 	}
 
+	/**
+	 * Configures a package, useful when a package has been installed manually
+	 * <pre>
+	 * ./yiic package configure ypm
+	 * </pre>
+	 * @param array $args an array of arguments passed to the function
+	 */
+	public function actionConfigure($args) {
+		$packageName = array_shift($args);
+		if (!$packageName) {
+			$this->usageError("No package name specified!");
+		}
+		$manager = $this->getManager();
+		$package = $manager->getPackages()->itemAt($packageName); /* @var APackage $package */
+		if ($package === null) {
+			echo "No package found with the name: '".$packageName."'\n";
+			return;
+		}
+		if ($package->installationHash == "") {
+			$package->installationHash = $package->getHash();
+		}
+		if (!$package->save()) {
+			echo "Failed to save package:\n";
+			echo $package->listErrors();
+			return;
+		}
+		echo "OK\n";
+	}
 	/**
 	 * Finds a package with the given name
 	 * @param $args an array of arguments passed to the function

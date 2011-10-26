@@ -2,7 +2,7 @@
 	"name": "ypm",
 	"description": "Yii Package Manager",
 	"author": "Charles",
-	"installationHash": null,
+	"installationHash": "d546e7aa3c60d36f4a57a4e7fc9a3f1f2daaa28b",
 	"type": "git",
 	"url": "git@github.com:phpnode\/Yii-Package-Manager.git",
 	"repositoryName": "local",
