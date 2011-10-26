@@ -278,6 +278,7 @@ class APackage extends CFormModel {
 		}
 		$filename = $dir."/package.json";
 		$json = function_exists("json_encode") ? json_encode($this->toJSON()) : CJSON::encode($this->toJSON());
+		$json = AJSON::prettyPrint($json);
 		return file_put_contents($filename,$json) ? true : false;
 	}
 	/**
@@ -291,9 +292,6 @@ class APackage extends CFormModel {
 		}
 		$attributes["dependencies"] = array();
 		foreach($this->getDependencies() as $dependency) {
-			if (is_array($dependency)) {
-				die(print_r($dependency,true));
-			}
 			$attributes['dependencies'][$dependency->name] = $dependency->toJSON();
 		}
 		return $attributes;

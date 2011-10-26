@@ -1,1 +1,35 @@
-{"name":"ypm","description":"Yii Package Manager","author":"Charles","installationHash":null,"type":"git","url":"git@github.com:phpnode\/Yii-Package-Manager.git","repositoryName":"local","dependencies":{"git":{"name":"git","description":"A Yii wrapper for the git command line executable. Allows access to all git commands via a simple object oriented interface.","author":null,"installationHash":null,"type":"git","url":null,"repositoryName":"local","dependencies":[]},"curl":{"name":"curl","description":"A curl wrapper for Yii, allows easier access to curl functions.","author":"Charles Pick","installationHash":null,"type":"git","url":null,"repositoryName":"local","dependencies":[]}}}
+{
+	"name": "ypm",
+	"description": "Yii Package Manager",
+	"author": "Charles",
+	"installationHash": null,
+	"type": "git",
+	"url": "git@github.com:phpnode\/Yii-Package-Manager.git",
+	"repositoryName": "local",
+	"dependencies": {
+		"git": {
+			"name": "git",
+			"description": "A Yii wrapper for the git command line executable. Allows access to all git commands via a simple object oriented interface.",
+			"author": null,
+			"installationHash": null,
+			"type": "git",
+			"url": null,
+			"repositoryName": "local",
+			"dependencies": [
+				
+			]
+		},
+		"curl": {
+			"name": "curl",
+			"description": "A curl wrapper for Yii, allows easier access to curl functions.",
+			"author": "Charles Pick",
+			"installationHash": null,
+			"type": "git",
+			"url": null,
+			"repositoryName": "local",
+			"dependencies": [
+				
+			]
+		}
+	}
+}
