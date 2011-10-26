@@ -350,6 +350,7 @@ class APackage extends CFormModel {
 	public function setDependencies($value) {
 		$this->_dependencies = array();
 		foreach($value as $name => $config) {
+			$config = (array) $config;
 			$config['class'] = "APackage";
 			$this->_dependencies[$name] = Yii::createComponent($config);
 		}
