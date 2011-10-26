@@ -354,8 +354,9 @@ class APackage extends CFormModel {
 		$this->_dependencies = array();
 		foreach($value as $name => $config) {
 			if (is_string($config)) {
-				$config = array("name" => $config);
 				$name = $config;
+				$config = array("name" => $config);
+
 			}
 			else {
 				$config = (array) $config;
