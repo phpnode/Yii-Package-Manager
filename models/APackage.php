@@ -306,16 +306,21 @@ class APackage extends CFormModel {
 			if (is_array($dependency)) {
 				$broken[] = $name;
 			}
+			elseif ($dependency->url == "") {
+				print_r($dependency->attributes);
+				$broken[] = $name;
+			}
 		}
 		return $broken;
 	}
 
 	/**
 	 * Finds the packages that this package depends on
+	 * @param boolean $forceRefresh whether to force a refresh of the package's dependencies or not
 	 * @return array an array of package names that this package depends on
 	 */
-	public function getDependencies() {
-		if ($this->_dependencies !== null) {
+	public function getDependencies($forceRefresh = false) {
+		if (!$forceRefresh && $this->_dependencies !== null) {
 			return $this->_dependencies;
 		}
 		$options = array(
@@ -334,7 +339,7 @@ class APackage extends CFormModel {
 						continue;
 					}
 					if (isset($manager->getPackages()->{$match})) {
-						$this->_dependencies[$match] = $manager->getPackages()->{$match};
+						$this->_dependencies[$match] = $manager->getPackages()->itemAt($match);
 					}
 					else {
 						$this->_dependencies[$match] = array("name" => $match);
@@ -348,6 +353,7 @@ class APackage extends CFormModel {
 	public function setDependencies($value) {
 		$this->_dependencies = array();
 		foreach($value as $name => $config) {
+
 			$config = (array) $config;
 			$config['class'] = "APackage";
 			$this->_dependencies[$name] = Yii::createComponent($config);

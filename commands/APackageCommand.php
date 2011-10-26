@@ -137,13 +137,19 @@ class APackageCommand extends CConsoleCommand {
 		if ($package->url == "") {
 			$package->url = $remotes['origin']->fetchUrl;
 		}
+		$package->getDependencies(true);
 		$broken = $package->getBrokenDependencies();
 		if (count($broken)) {
 			echo "The following dependencies could not be resolved: ".implode(", ",$broken)."\n";
 			return;
 		}
-		$package->save();
+		if (!$package->save()) {
+			echo "There was a problem updating the package:\n";
+			echo $package->listErrors();
+			return;
+		}
 		$git = $package->getGitRepository(); /** @var AGitRepository $git */
+		$git->add("package.json");
 		$git->commit("Published package with Yii Package Manager",true);
 		$git->push("origin","master");
 
