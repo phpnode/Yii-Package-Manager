@@ -292,7 +292,7 @@ class APackage extends CFormModel {
 		}
 		$attributes["dependencies"] = array();
 		foreach($this->getDependencies() as $dependency) {
-			$attributes['dependencies'][$dependency->name] = $dependency->toJSON();
+			$attributes['dependencies'][] = $dependency->name;
 		}
 		return $attributes;
 	}
@@ -353,8 +353,13 @@ class APackage extends CFormModel {
 	public function setDependencies($value) {
 		$this->_dependencies = array();
 		foreach($value as $name => $config) {
-
-			$config = (array) $config;
+			if (is_string($config)) {
+				$config = array("name" => $config);
+				$name = $config;
+			}
+			else {
+				$config = (array) $config;
+			}
 			$config['class'] = "APackage";
 			$this->_dependencies[$name] = Yii::createComponent($config);
 		}
