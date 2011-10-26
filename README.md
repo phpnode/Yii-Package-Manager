@@ -22,33 +22,33 @@ git clone git://github.com/phpnode/Yii-Package-Manager.git ypm
 4. In your main application config (config/main.php), add the packages alias and configure the package manger:
 <pre>
 "aliases" => array(
-	"packages" => dirname(__FILE__)."/packages",
-	...
+    "packages" => dirname(__FILE__)."/packages",
+    ...
 ),
 "components" => array(
-	"packageManager" => array(
-		"class" => "packages.ypm.components.APackageManager",
-	),
-	...
+    "packageManager" => array(
+        "class" => "packages.ypm.components.APackageManager",
+    ),
+    ...
 ),
 </pre>
 
 5. In your console application config (config/console.php), add the packages alias, configure the package manager and add the ypm command.
 <pre>
 "aliases" => array(
-	"packages" => dirname(__FILE__)."/packages",
-	...
+    "packages" => dirname(__FILE__)."/packages",
+    ...
 ),
 "commandMap" => array(
-	"ypm" => array(
-		"class" => "packages.ypm.commands.APackageCommand",
-	),
+    "ypm" => array(
+        "class" => "packages.ypm.commands.APackageCommand",
+    ),
 ),
 "components" => array(
-	"packageManager" => array(
-		"class" => "packages.ypm.components.APackageManager",
-	),
-	...
+    "packageManager" => array(
+        "class" => "packages.ypm.components.APackageManager",
+    ),
+    ...
 ),
 </pre>
 
